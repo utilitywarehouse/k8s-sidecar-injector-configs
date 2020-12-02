@@ -3,6 +3,7 @@ kind: Kustomization
 configMapGenerator:
   - name: k8s-sidecar-injector-configs
     files:
+      - vault-init-container-aws-base.yaml
       - vault-sidecar-aws-gcp-base.yaml
       - vault-sidecar-aws-base.yaml
       - vault-sidecar-gcp-base.yaml
