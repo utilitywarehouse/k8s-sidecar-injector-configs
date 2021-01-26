@@ -2,7 +2,7 @@ name: vault-sidecar-aws-gcp-base
 prependContainers: true
 containers:
   - name: vault-credentials-agent-aws
-    image: quay.io/utilitywarehouse/vault-kube-cloud-credentials:0.6.3
+    image: quay.io/utilitywarehouse/vault-kube-cloud-credentials:0.7.0
     lifecycle:
       postStart:
         exec:
@@ -10,7 +10,7 @@ containers:
             - /bin/sh
             - -c
             - |
-              while ! nc -w 1 127.0.0.1 8000; do sleep 1; done
+              while ! nc -w 1 127.0.0.1 8098; do sleep 1; done
     args:
       - aws-sidecar
       - -prefix=$(VKAC_ENVIRONMENT)
@@ -27,7 +27,7 @@ containers:
       - name: vault-tls
         mountPath: /etc/tls
   - name: vault-credentials-agent-gcp
-    image: quay.io/utilitywarehouse/vault-kube-cloud-credentials:0.6.3
+    image: quay.io/utilitywarehouse/vault-kube-cloud-credentials:0.7.0
     lifecycle:
       postStart:
         exec:
@@ -35,13 +35,13 @@ containers:
             - /bin/sh
             - -c
             - |
-              while ! nc -w 1 127.0.0.1 8001; do sleep 1; done
+              while ! nc -w 1 127.0.0.1 8198; do sleep 1; done
     args:
       - gcp-sidecar
       - -roleset=$(VKAC_ENVIRONMENT)-$(POD_NAMESPACE)-$(POD_SERVICE_ACCOUNT)
       - -kube-auth-role=$(VKAC_ENVIRONMENT)-$(POD_NAMESPACE)-$(POD_SERVICE_ACCOUNT)
-      - -listen-address=127.0.0.1:8001
-      - -operational-address=:8091
+      - -listen-address=127.0.0.1:8198
+      - -operational-address=:8199
     env:
       - name: VAULT_CACERT
         value: "/etc/tls/ca.crt"
@@ -57,18 +57,18 @@ containers:
             fieldPath: spec.serviceAccountName
     ports:
       - name: metrics
-        containerPort: 8091
+        containerPort: 8199
         protocol: TCP
     volumeMounts:
       - name: vault-tls
         mountPath: /etc/tls
 env:
   - name: AWS_CONTAINER_CREDENTIALS_FULL_URI
-    value: "http://127.0.0.1:8000/credentials"
+    value: "http://127.0.0.1:8098/credentials"
   - name: GCE_METADATA_HOST
-    value: "127.0.0.1:8001"
+    value: "127.0.0.1:8198"
   - name: GCE_METADATA_ROOT
-    value: "127.0.0.1:8001"
+    value: "127.0.0.1:8198"
 
 volumes:
   - name: vault-tls
