@@ -1,4 +1,6 @@
-# k8s-sidecar-injector-configs
+# DEPRECATED
+
+Moved to https://github.com/utilitywarehouse/vault-kube-cloud-credentials/tree/master/manifests/sidecar-injector
 
 A collection of sidecar injection configs for
 [k8s-sidecar-injector](https://github.com/tumblr/k8s-sidecar-injector), provided
